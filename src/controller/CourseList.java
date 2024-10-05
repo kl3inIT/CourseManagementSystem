@@ -5,7 +5,10 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import model.Course;
+import model.Register;
 import util.Validation;
 
 public class CourseList {
@@ -21,21 +24,32 @@ public class CourseList {
 
     //1.1
     public void loadData() {
-        try {
-            FileReader fr = new FileReader("course.txt");
-            BufferedReader br = new BufferedReader(fr);
+        try (BufferedReader br = new BufferedReader(new FileReader("courses.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line != null) {
-                    String[] word = line.split("\\\\");
-                    String ccode = word[0];
-                    String scode = word[1];
-                    String sname = word[2];
-                    String semester = word[3];
-                    String year = word[4];
-                    int seats = Integer.parseInt(word[5]);
-                    int registered = Integer.parseInt(word[6]);
-                    double price = Double.parseDouble(word[7]);
+                if (!line.trim().isEmpty()) { // Check for non-empty lines
+                    String[] word = line.split("\\\\"); // Ensure this delimiter is correct
+                    if (word.length < 8) {
+                        System.err.println("Invalid data format: " + line);
+                        continue; // Skip invalid lines
+                    }
+                    String ccode = word[0].trim();
+                    String scode = word[1].trim();
+                    String sname = word[2].trim();
+                    String semester = word[3].trim();
+                    String year = word[4].trim();
+                    int seats;
+                    int registered;
+                    double price;
+                    try {
+                        seats = Integer.parseInt(word[5].trim());
+                        registered = Integer.parseInt(word[6].trim());
+                        price = Double.parseDouble(word[7].trim());
+                    } catch (NumberFormatException e) {
+                        System.err.println("Number format error in line: " + line);
+                        continue; // Skip lines with invalid number formats
+                    }
+
                     if (searchByCcode(ccode) == null) {
                         Course newCourse = new Course(ccode, scode, sname, semester, year, seats, registered, price);
                         courseList.addLast(newCourse);
@@ -43,7 +57,7 @@ public class CourseList {
                 }
             }
         } catch (IOException e) {
-            System.err.println("File is empty");
+            System.err.println("Error reading courses.txt: " + e.getMessage());
         }
     }
 
@@ -90,40 +104,40 @@ public class CourseList {
 
     //1.4
     public void saveToFile() {
-        try {
-            FileReader fr = new FileReader("course.txt");
-            BufferedReader br = new BufferedReader(fr);
-            Node<Course> cur = courseList.head;
-            while (cur != null) {
-                String code = cur.data.getCcode();
-                boolean isExist = false;
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line != null) {
-                        String[] word = line.split("\\\\");
-                        if (word[0].equalsIgnoreCase(code)) {
-                            isExist = true;
-                            break;
-                        }
+        // First, collect all existing course codes to avoid duplicates
+        Set<String> existingCcodes = new HashSet<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("courses.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    String[] word = line.split("\\\\");
+                    if (word.length > 0) {
+                        existingCcodes.add(word[0].trim().toUpperCase());
                     }
                 }
-                if (!isExist) {
-                    FileWriter fw = new FileWriter("course.txt", true);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    String data = cur.data.toString();
-                    bw.write(data);
+            }
+        } catch (IOException e) {
+            // If file doesn't exist, we'll create it later
+            System.out.println("courses.txt not found. A new file will be created.");
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("courses.txt", true))) {
+            Node<Course> cur = courseList.head;
+            while (cur != null) {
+                String code = cur.data.getCcode().toUpperCase();
+                if (!existingCcodes.contains(code)) {
+                    bw.write(cur.data.toString());
                     bw.newLine();
-                    bw.close();
-                    fw.close();
+                    existingCcodes.add(code); // Add to set to prevent future duplicates
                 }
                 cur = cur.next;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Courses saved successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing to courses.txt: " + e.getMessage());
         }
     }
 
-    //1.5
     public Node<Course> searchByCcode(String ccode) {
         Node<Course> current = courseList.head;
         while (current != null) {
@@ -133,6 +147,20 @@ public class CourseList {
             current = current.next;
         }
         return null; // Not found
+    }
+
+    //1.5
+    public void searchCourseByCode() {
+        String ccode = Validation.getValidString("Enter Course Code (Format CCxxxx): ",
+                "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
+        Node<Course> course = searchByCcode(ccode);
+        if (course != null) {
+            System.out.println("========================");
+            course.data.displayCourseInfo();
+            System.out.println("========================");
+        } else {
+            System.err.println("Course with code " + ccode + " NOT FOUND!");
+        }
     }
 
     //1.6    
@@ -195,4 +223,23 @@ public class CourseList {
             System.err.println("Not found!");
         }
     }
+
+    //1.12
+    public void searchCourseByCcode(RegisterList registerList, StudentList studentList) {
+        String ccode = Validation.getValidString("Enter Course Code (Format CCxxxx): ",
+                "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
+        Node<Course> course = searchByCcode(ccode);
+        if (course != null) {
+            System.out.println("========================");
+            course.data.displayCourseInfo();
+            System.out.println("========================");
+            String scode = registerList.findScodeByCcode(ccode);
+            studentList.searchByScode(scode).data.displayStudentInfo();
+            System.out.println("========================");
+        } else {
+            System.err.println("Course with code " + ccode + " NOT FOUND!");
+        }
+
+    }
+
 }

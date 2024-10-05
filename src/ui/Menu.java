@@ -23,7 +23,6 @@ public class Menu {
             System.out.println("There are no option in the menu");
             return;
         }
-        System.out.println("\n------------------------------------");
         System.out.println(menuTitle);
         for (String option : optionList) {
             System.out.println(option);

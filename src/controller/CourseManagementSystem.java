@@ -1,6 +1,5 @@
 package controller;
 
-import model.Course;
 import model.Student;
 import ui.Menu;
 import ui.MenuManagement;
@@ -54,14 +53,7 @@ public class CourseManagementSystem {
                     courseList.saveToFile();
                     break;
                 case 5:
-                    String ccode = Validation.getValidString("Enter Course Code: ",
-                            "The Format code is CCxxxx with x is number", "^CC\\d{4}$");
-                    Node<Course> courseSearch = courseList.searchByCcode(ccode);
-                    if (courseSearch != null) {
-                        courseSearch.data.displayCourseInfo();
-                    } else {
-                        System.err.println("NOT FOUND!");
-                    }
+                    courseList.searchCourseByCode();
                     break;
                 case 6:
                     String ccodeDelete = Validation.getValidString("Enter Course Code: ",
@@ -86,6 +78,7 @@ public class CourseManagementSystem {
                     courseList.searchByName();
                     break;
                 case 12:
+                    courseList.searchCourseByCcode(registerList, studentList);
                     break;
                 case 13:
                     return;
@@ -112,15 +105,7 @@ public class CourseManagementSystem {
                     studentList.saveToFile();
                     break;
                 case 5:
-                    String scode = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
-                            "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
-                    Node<Student> studentSearch = studentList.searchByScode(scode);
-                    
-                    if (studentSearch != null) {
-                        studentSearch.data.displayStudentInfo();
-                    } else {
-                        System.err.println("NOT FOUND!");
-                    }
+                    studentList.searchStudentByCode();
                     break;
                 case 6:
                     String scodeDelete = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
@@ -132,13 +117,16 @@ public class CourseManagementSystem {
                     studentList.searchByName();
                     break;
                 case 8:
+                    studentList.searchCourseByCcode(registerList, courseList);
+                    break;
+                case 9:
                     return;
             }
         }
     }
 
     public void executeRegisteringList() {
-        Menu menu = mm.menuCourseList();
+        Menu menu = mm.menuRegisterList();
         while (true) {
             menu.printMenu();
             int choice = menu.getChoice();

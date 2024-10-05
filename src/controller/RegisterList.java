@@ -8,8 +8,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RegisterList {
 
@@ -17,7 +20,7 @@ public class RegisterList {
 
     public RegisterList() {
     }
-    
+
     public MyLinkedList<Register> getRegisterList() {
         return registerList;
     }
@@ -25,24 +28,22 @@ public class RegisterList {
     //3.1
     public void loadData() {
         try {
-            FileReader fr = new FileReader("registerings.txt");
-            BufferedReader br = new BufferedReader(fr);
+            BufferedReader br = new BufferedReader(new FileReader("registerings.txt"));
             String line;
             while ((line = br.readLine()) != null) {
-                if (line != null) {
-                    String[] word = line.split("\\\\");
-                    String ccode = word[0];
-                    String scode = word[1];
-                    Date date = new SimpleDateFormat("dd-MM-yyyy").parse(word[2]);
-                    double mark = Double.parseDouble(word[3]);
-                    if (searchByCcode(ccode) != null && searchByScode(scode) != null) {
-                        Register register = new Register(ccode, scode, date, mark);
-                        registerList.addLast(register);
-                    }
+                String[] word = line.split("\\\\");
+                String ccode = word[0];
+                String scode = word[1];
+                Date date = new SimpleDateFormat("dd-MM-yyyy").parse(word[2]);
+                double mark = Double.parseDouble(word[3]);
+                if (searchByCcode(ccode) == null && searchByScode(scode) == null) {
+                    Register register = new Register(ccode, scode, date, mark);
+                    registerList.addLast(register);
                 }
             }
+            br.close();
         } catch (Exception e) {
-            System.err.println("Error");
+            System.err.println("Error while loading data: " + e.getMessage());
         }
     }
 
@@ -114,37 +115,39 @@ public class RegisterList {
 
     //3.4
     public void saveToFile() {
-        try {
-            FileReader fr = new FileReader("registerings.txt");
-            BufferedReader br = new BufferedReader(fr);
-            Node<Register> cur = registerList.head;
-            while (cur != null) {
-                String Ccode = cur.data.getCcode();
-                String Scode = cur.data.getScode();
-                boolean isExist = false;
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line != null) {
-                        String[] word = line.split("\\\\");
-                        if (word[0].equalsIgnoreCase(Ccode) && word[1].equalsIgnoreCase(Scode)) {
-                            isExist = true;
-                            break;
-                        }
+        // Step 1: Collect all existing (course code, student code) pairs to avoid duplicates
+        Set<String> existingRegisters = new HashSet<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("registerings.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    String[] word = line.split("\\\\");
+                    if (word.length >= 2) {
+                        String combinedKey = (word[0].trim().toUpperCase() + "-" + word[1].trim().toUpperCase());
+                        existingRegisters.add(combinedKey); // Store CourseCode-StudentCode as a key
                     }
                 }
-                if (!isExist) {
-                    FileWriter fw = new FileWriter("registerings.txt", true);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    String data = cur.data.toString();
-                    bw.write(data);
+            }
+        } catch (IOException e) {
+            // Handle case when the file doesn't exist
+            System.out.println("registerings.txt not found. A new file will be created.");
+        }
+
+        // Step 2: Write new records that don't already exist in the file
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("registerings.txt", true))) {
+            Node<Register> cur = registerList.head;
+            while (cur != null) {
+                String combinedKey = cur.data.getCcode().toUpperCase() + "-" + cur.data.getScode().toUpperCase();
+                if (!existingRegisters.contains(combinedKey)) {
+                    bw.write(cur.data.toString());
                     bw.newLine();
-                    bw.close();
-                    fw.close();
+                    existingRegisters.add(combinedKey); // Add new key to avoid future duplicates
                 }
                 cur = cur.next;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Register entries saved successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing to registerings.txt: " + e.getMessage());
         }
     }
 
@@ -203,7 +206,7 @@ public class RegisterList {
         }
         return null; // Not found
     }
-    
+
     public void deleteRegisterByCcode(String ccode) {
         Node<Register> current = registerList.head;
         while (current != null) {
@@ -213,7 +216,7 @@ public class RegisterList {
             current = current.next;
         }
     }
-    
+
     public void deleteRegisterByScode(String scode) {
         Node<Register> current = registerList.head;
         while (current != null) {
@@ -224,4 +227,25 @@ public class RegisterList {
         }
     }
 
+    public String findScodeByCcode(String ccode) {
+        Node<Register> current = registerList.head;
+        while (current != null) {
+            if (current.data.getCcode().equalsIgnoreCase(ccode)) {
+                return current.data.getScode();
+            }
+            current = current.next;
+        }
+        return null;
+    }
+    
+    public String findCcodeByScode(String scode) {
+        Node<Register> current = registerList.head;
+        while (current != null) {
+            if (current.data.getScode().equalsIgnoreCase(scode)) {
+                return current.data.getCcode();
+            }
+            current = current.next;
+        }
+        return null;
+    }
 }

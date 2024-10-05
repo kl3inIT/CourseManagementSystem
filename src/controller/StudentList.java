@@ -22,25 +22,22 @@ public class StudentList {
 
     //2.1
     public void loadData() {
-        try {
-            FileReader fr = new FileReader("students.txt");
-            BufferedReader br = new BufferedReader(fr);
+        try (BufferedReader br = new BufferedReader(new FileReader("students.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line != null) {
-                    String[] word = line.split("\\\\");
-                    String scode = word[0];
-                    String name = word[1];
-                    int byear = Integer.parseInt(word[2]);
-                    if (searchByScode(scode) == null) {
-                        Student newStudent = new Student(scode, name, byear);
-                        studentList.addLast(newStudent);
-                    }
-
+                String[] word = line.split("\\\\");
+                String scode = word[0];
+                String name = word[1];
+                int byear = Integer.parseInt(word[2]);
+                if (searchByScode(scode) == null) {
+                    Student newStudent = new Student(scode, name, byear);
+                    studentList.addLast(newStudent);
                 }
             }
-        } catch (Exception e) {
-            System.err.println("File is empty");
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing student data: " + e.getMessage());
         }
     }
 
@@ -89,31 +86,12 @@ public class StudentList {
 
     //2.4
     public void saveToFile() {
-        try {
-            FileReader fr = new FileReader("students.txt");
-            BufferedReader br = new BufferedReader(fr);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("students.txt", true))) {
             Node<Student> cur = studentList.head;
             while (cur != null) {
-                String code = cur.data.getScode();
-                boolean isExist = false;
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line != null) {
-                        String[] word = line.split("\\\\");
-                        if (word[0].equalsIgnoreCase(code)) {
-                            isExist = true;
-                            break;
-                        }
-                    }
-                }
-                if (!isExist) {
-                    FileWriter fw = new FileWriter("students.txt", true);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    String data = cur.data.toString();
-                    bw.write(data);
+                if (isStudentNew(cur.data.getScode())) {
+                    bw.write(cur.data.toString());
                     bw.newLine();
-                    bw.close();
-                    fw.close();
                 }
                 cur = cur.next;
             }
@@ -122,7 +100,21 @@ public class StudentList {
         }
     }
 
-    //2.5
+    private boolean isStudentNew(String scode) {
+        try (BufferedReader br = new BufferedReader(new FileReader("students.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] word = line.split("\\\\");
+                if (word[0].equalsIgnoreCase(scode)) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public Node<Student> searchByScode(String scode) {
         Node<Student> current = studentList.head;
         while (current != null) {
@@ -132,6 +124,20 @@ public class StudentList {
             current = current.next;
         }
         return null; // Not found
+    }
+
+    //2.5
+    public void searchStudentByCode() {
+        String scode = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
+                    "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
+        Node<Student> student = searchByScode(scode);
+        if (student != null) {
+            System.out.println("========================");
+            student.data.displayStudentInfo();
+            System.out.println("========================");
+        } else {
+            System.err.println("Course with code " + scode + " NOT FOUND!");
+        }
     }
 
     //2.6
@@ -163,4 +169,20 @@ public class StudentList {
     }
 
     //2.8
+    public void searchCourseByCcode(RegisterList registerList, CourseList courseList) {
+        String scode = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
+                "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
+        Node<Student> student = searchByScode(scode);
+        if (student != null) {
+            System.out.println("========================");
+            student.data.displayStudentInfo();
+            System.out.println("========================");
+            String ccode = registerList.findCcodeByScode(scode);
+            courseList.searchByCcode(ccode).data.displayCourseInfo();
+            System.out.println("========================");
+        } else {
+            System.err.println("Course with code " + scode + " NOT FOUND!");
+        }
+
+    }
 }
