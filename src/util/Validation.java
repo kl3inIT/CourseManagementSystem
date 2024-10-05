@@ -1,8 +1,5 @@
 package util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -68,16 +65,4 @@ public class Validation {
         }
     }
 
-    public static Date getDate(String inputMsg, String errorMsg) {
-        while (true) {
-            System.out.print(inputMsg);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            dateFormat.setLenient(false);
-            try {
-                return dateFormat.parse(sc.nextLine().trim());
-            } catch (ParseException e) {
-                System.err.println(errorMsg);
-            }
-        }
-    }
 }

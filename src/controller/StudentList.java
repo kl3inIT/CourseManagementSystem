@@ -1,23 +1,16 @@
 package controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDate;
 import model.Student;
 import util.Validation;
+
+import java.io.*;
+import java.time.LocalDate;
 
 public class StudentList {
 
     private final MyLinkedList<Student> studentList = new MyLinkedList<>();
 
     public StudentList() {
-    }
-
-    public MyLinkedList<Student> getStudentList() {
-        return studentList;
     }
 
     //2.1
@@ -129,7 +122,7 @@ public class StudentList {
     //2.5
     public void searchStudentByCode() {
         String scode = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
-                    "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
+                "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
         Node<Student> student = searchByScode(scode);
         if (student != null) {
             System.out.println("========================");
@@ -156,7 +149,7 @@ public class StudentList {
         Node<Student> temp = studentList.head;
         boolean ok = true;
         while (temp != null) {
-            if (temp.data.getName().toUpperCase().equalsIgnoreCase(nameSearch.toUpperCase())) {
+            if (temp.data.getName().toUpperCase().contains(nameSearch.toUpperCase())) {
                 temp.data.displayStudentInfo();
                 ok = false;
             }

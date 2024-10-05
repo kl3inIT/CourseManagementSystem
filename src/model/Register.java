@@ -26,37 +26,20 @@ public class Register {
         return ccode;
     }
 
-    public void setCcode(String ccode) {
-        this.ccode = ccode;
-    }
-
     public String getScode() {
         return scode;
     }
 
-    public void setScode(String scode) {
-        this.scode = scode;
-    }
-
     public String getBdate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String formattedDate = dateFormat.format(bdate);
-        return formattedDate;
-    }
-
-    public void setBdate(Date bdate) {        
-        this.bdate = bdate;
-    }
-
-    public double getMark() {
-        return mark;
+        return dateFormat.format(bdate);
     }
 
     public void setMark(double mark) {
         this.mark = mark;
         this.state = (mark >= 5) ? 1 : 0;
     }
-    
+
     @Override
     public String toString() {
         return ccode + "\\" + scode + "\\" + getBdate() + "\\" + mark + "\\" + state;

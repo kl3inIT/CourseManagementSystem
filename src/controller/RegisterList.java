@@ -4,11 +4,8 @@ import model.Course;
 import model.Register;
 import model.Student;
 import util.Validation;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,10 +16,6 @@ public class RegisterList {
     private final MyLinkedList<Register> registerList = new MyLinkedList<>();
 
     public RegisterList() {
-    }
-
-    public MyLinkedList<Register> getRegisterList() {
-        return registerList;
     }
 
     //3.1
@@ -79,6 +72,8 @@ public class RegisterList {
                     "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
             if (searchByCcode(ccode, courseList) != null && searchByScode(scode, studentList) != null) {
                 break;
+            } else {
+                System.err.println("Not found Student or Course");
             }
         }
         Date date = new Date();
@@ -177,7 +172,7 @@ public class RegisterList {
     }
 
     //3.6
-    public void updateMark(CourseList courseList, StudentList studentList) {
+    public void updateMark() {
         String scode, ccode;
         while (true) {
             ccode = Validation.getValidString("Enter Course Code: ",
@@ -237,7 +232,7 @@ public class RegisterList {
         }
         return null;
     }
-    
+
     public String findCcodeByScode(String scode) {
         Node<Register> current = registerList.head;
         while (current != null) {

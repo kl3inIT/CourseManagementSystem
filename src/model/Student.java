@@ -19,10 +19,6 @@ public class Student {
         return scode;
     }
 
-    public void setScode(String scode) {
-        this.scode = scode;
-    }
-
     public String getName() {
         return name;
     }
@@ -31,20 +27,12 @@ public class Student {
         this.name = name;
     }
 
-    public int getByear() {
-        return byear;
-    }
-
-    public void setByear(int byear) {
-        this.byear = byear;
-    }
-
     @Override
     public String toString() {
         return scode + "\\" + name + "\\" + byear;
     }
-    
-    public void displayStudentInfo(){
+
+    public void displayStudentInfo() {
         System.out.println("Student code: " + scode);
         System.out.println("Student name: " + name);
         System.out.println("Birth year of student: " + byear);

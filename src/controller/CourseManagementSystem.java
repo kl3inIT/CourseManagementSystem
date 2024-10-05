@@ -1,6 +1,5 @@
 package controller;
 
-import model.Student;
 import ui.Menu;
 import ui.MenuManagement;
 import util.Validation;
@@ -74,7 +73,7 @@ public class CourseManagementSystem {
                     String coureDelete = courseList.deleteByPosition().data.getCcode();
                     registerList.deleteRegisterByCcode(coureDelete);
                     break;
-                case 11:               
+                case 11:
                     courseList.searchByName();
                     break;
                 case 12:
@@ -109,7 +108,7 @@ public class CourseManagementSystem {
                     break;
                 case 6:
                     String scodeDelete = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
-                    "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
+                            "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
                     registerList.deleteRegisterByScode(scodeDelete);
                     studentList.deleteByScode(scodeDelete);
                     break;
@@ -147,7 +146,7 @@ public class CourseManagementSystem {
                     registerList.sort();
                     break;
                 case 6:
-                    registerList.updateMark(courseList, studentList);
+                    registerList.updateMark();
                     break;
                 case 7:
                     return;

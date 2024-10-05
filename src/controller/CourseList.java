@@ -1,25 +1,17 @@
 package controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import model.Course;
+import util.Validation;
+
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
-import model.Course;
-import model.Register;
-import util.Validation;
 
 public class CourseList {
 
     private final MyLinkedList<Course> courseList = new MyLinkedList<>();
 
     public CourseList() {
-    }
-
-    public MyLinkedList<Course> getCourseList() {
-        return courseList;
     }
 
     //1.1
@@ -82,7 +74,7 @@ public class CourseList {
         return new Course(ccode, scode, sname, semester, year, seats, price);
     }
 
-    //1.2   
+    //1.2
     public void addLast() {
         courseList.addLast(inputCourse());
     }
@@ -163,7 +155,7 @@ public class CourseList {
         }
     }
 
-    //1.6    
+    //1.6
     public void deleteByCcode(String ccode) {
         Node<Course> result = searchByCcode(ccode);
         if (result != null) {

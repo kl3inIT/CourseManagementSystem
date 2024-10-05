@@ -10,15 +10,6 @@ public class MyLinkedList<T> {
         tail = null;
     }
 
-    public Node getHead() {
-        return head;
-    }
-
-    public void clear() {
-        head = null;
-        tail = null;
-    }
-
     public boolean isEmpty() {
         return (head == null && tail == null);
     }
@@ -58,13 +49,6 @@ public class MyLinkedList<T> {
 
         tail.next = node;
         tail = node;
-    }
-
-    public Node<T> getNext(Node<T> node) {
-        if (node == null) {
-            return null;
-        }
-        return node.next;
     }
 
     public Node<T> getPrev(Node<T> node) {
@@ -182,37 +166,6 @@ public class MyLinkedList<T> {
 
         Node<T> node = getByIndex(index);
         delete(node);
-    }
-
-    public void set(Node<T> node, T data) {
-        if (node == null) {
-            return;
-        }
-        node.data = data;
-    }
-
-    public void set(int index, T data) {
-        Node<T> node = getByIndex(index);
-        if (node == null) {
-            return;
-        }
-        node.data = data;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CommonList{ ");
-
-        Node<T> node = head;
-        while (node != null) {
-            sb.append(node.toString());
-            sb.append(", ");
-            node = node.next;
-        }
-        sb.append("}");
-
-        return sb.toString();
     }
 
     public void swap(Node<T> a, Node<T> b) {

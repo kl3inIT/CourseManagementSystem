@@ -8,5 +8,5 @@ public class Main {
         CourseManagementSystem CMS = new CourseManagementSystem();
         CMS.executeSystem();
     }
-    
+
 }
