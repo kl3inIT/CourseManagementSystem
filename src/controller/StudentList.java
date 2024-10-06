@@ -50,7 +50,7 @@ public class StudentList {
         String name = Validation.getString("Enter student name: ", "Wrong input!");
         int byear;
             byear = Validation.getAnInteger("Enter birth year: ",
-                    "Please input from 1990 to current year!", 1990, LocalDate.now().getYear() - 18);
+                    "Please input from 1990 to 2006!", 1990, LocalDate.now().getYear() - 18);
         System.out.println("Input student successfully!");
         return new Student(scode, name, byear);
     }
@@ -119,6 +119,7 @@ public class StudentList {
         }
         return null; // Not found
     }
+    
 
     //2.5
     public void searchStudentByCode() {
@@ -180,9 +181,8 @@ public class StudentList {
         if (student != null) {
             System.out.println("\nHere is student you want to seach: ");
             student.data.displayStudentInfo();
-            String ccode = registerList.findCcodeByScode(scode);
             System.out.println("\nHere are the courses this student has register in: ");
-            courseList.searchByCcode(ccode).data.displayCourseInfo();
+            registerList.printOutCourseByScode(scode, courseList); 
         } else {
             System.err.println("Student with code " + scode + " NOT FOUND!");
         }

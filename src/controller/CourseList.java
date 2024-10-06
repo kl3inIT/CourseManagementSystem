@@ -116,6 +116,9 @@ public class CourseList {
     }
 
     public Node<Course> searchByCcode(String ccode) {
+        if (courseList.isEmpty()) {
+            return null;
+        }
         Node<Course> current = courseList.head;
         while (current != null) {
             if (current.data.getCcode().equalsIgnoreCase(ccode)) {
@@ -223,18 +226,18 @@ public class CourseList {
 
     //1.12
     public void searchCourseByCcode(RegisterList registerList, StudentList studentList) {
-        String ccode = Validation.getValidString("Enter Course Code (Format CCxxxx): ",
+        String ccode =  Validation.getValidString("Enter Course Code (Format CCxxxx): ",
                 "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
         Node<Course> course = searchByCcode(ccode);
         if (course != null) {
             System.out.println("\nHere is the course you want to search: ");
             course.data.displayCourseInfo();
-            String scode = registerList.findScodeByCcode(ccode);
             System.out.println("\nHere are the students in this course: ");
-            studentList.searchByScode(scode).data.displayStudentInfo();
+            registerList.printOutStudentByCcode(ccode, studentList);
         } else {
             System.err.println("Course with code " + ccode + " NOT FOUND!");
         }
     }
 
 }
+

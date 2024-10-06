@@ -249,4 +249,30 @@ public class RegisterList {
         }
         return null;
     }
+
+    public void printOutCourseByScode(String scode, CourseList courseList){
+        Node<Register> cur = registerList.head;
+        while(cur != null){
+            if(cur.data.getScode().equalsIgnoreCase(scode)){
+                Node<Course> result =  courseList.searchByCcode(cur.data.getCcode());
+                if(result != null){
+                    result.data.displayCourseInfo();
+                }
+            }
+            cur = cur.next;
+        }
+    }
+    
+    public void printOutStudentByCcode(String ccode, StudentList studentList){
+        Node<Register> cur = registerList.head;
+        while(cur != null){
+            if(cur.data.getCcode().equalsIgnoreCase(ccode)){
+                Node<Student> result = studentList.searchByScode(cur.data.getScode());
+                if(result != null){
+                    result.data.displayStudentInfo();
+                }             
+            }
+            cur = cur.next;
+        }
+    }
 }
