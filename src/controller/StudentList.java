@@ -178,10 +178,10 @@ public class StudentList {
                 "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
         Node<Student> student = searchByScode(scode);
         if (student != null) {
-            System.out.println("Here is student you want to seach: ");
+            System.out.println("\nHere is student you want to seach: ");
             student.data.displayStudentInfo();
             String ccode = registerList.findCcodeByScode(scode);
-            System.out.println("Here are the courses this student has register in: ");
+            System.out.println("\nHere are the courses this student has register in: ");
             courseList.searchByCcode(ccode).data.displayCourseInfo();
         } else {
             System.err.println("Student with code " + scode + " NOT FOUND!");

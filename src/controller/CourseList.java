@@ -227,10 +227,10 @@ public class CourseList {
                 "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
         Node<Course> course = searchByCcode(ccode);
         if (course != null) {
-            System.out.println("Here is the course you want to search: ");
+            System.out.println("\nHere is the course you want to search: ");
             course.data.displayCourseInfo();
             String scode = registerList.findScodeByCcode(ccode);
-            System.out.println("Here are the students in this course: ");
+            System.out.println("\nHere are the students in this course: ");
             studentList.searchByScode(scode).data.displayStudentInfo();
         } else {
             System.err.println("Course with code " + ccode + " NOT FOUND!");

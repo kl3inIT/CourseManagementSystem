@@ -28,14 +28,27 @@ public class RegisterList {
                     String scode = word[1];
                     Date date = new SimpleDateFormat("dd-MM-yyyy").parse(word[2]);
                     double mark = Double.parseDouble(word[3]);
+                    if (!isExistRegister(ccode, scode)) {
                         Register register = new Register(ccode, scode, date, mark);
                         registerList.addLast(register);
+                    }
                 }
             }
-            System.out.println("Load data successfully!");
         } catch (Exception e) {
             System.err.println("Error");
         }
+    }
+
+    public boolean isExistRegister(String ccode, String scode) {
+        Node<Register> current = registerList.head;
+        while (current != null) {
+            if (current.data.getCcode().equalsIgnoreCase(ccode)
+                    && current.data.getScode().equalsIgnoreCase(scode)) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
     }
 
     private Node<Register> searchByScode(String scode) {
