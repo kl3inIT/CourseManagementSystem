@@ -4,8 +4,6 @@ import model.Course;
 import util.Validation;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
 
 public class CourseList {
 
@@ -16,40 +14,30 @@ public class CourseList {
 
     //1.1
     public void loadData() {
-        try (BufferedReader br = new BufferedReader(new FileReader("courses.txt"))) {
+        try {
+            FileReader fr = new FileReader("courses.txt");
+            BufferedReader br = new BufferedReader(fr);
             String line;
             while ((line = br.readLine()) != null) {
-                if (!line.trim().isEmpty()) { // Check for non-empty lines
-                    String[] word = line.split("\\\\"); // Ensure this delimiter is correct
-                    if (word.length < 8) {
-                        System.err.println("Invalid data format: " + line);
-                        continue; // Skip invalid lines
-                    }
-                    String ccode = word[0].trim();
-                    String scode = word[1].trim();
-                    String sname = word[2].trim();
-                    String semester = word[3].trim();
-                    String year = word[4].trim();
-                    int seats;
-                    int registered;
-                    double price;
-                    try {
-                        seats = Integer.parseInt(word[5].trim());
-                        registered = Integer.parseInt(word[6].trim());
-                        price = Double.parseDouble(word[7].trim());
-                    } catch (NumberFormatException e) {
-                        System.err.println("Number format error in line: " + line);
-                        continue; // Skip lines with invalid number formats
-                    }
-
+                if (line != null) {
+                    String[] word = line.split("\\\\");
+                    String ccode = word[0];
+                    String scode = word[1];
+                    String sname = word[2];
+                    String semester = word[3];
+                    String year = word[4];
+                    int seats = Integer.parseInt(word[5]);
+                    int registered = Integer.parseInt(word[6]);
+                    double price = Double.parseDouble(word[7]);
                     if (searchByCcode(ccode) == null) {
                         Course newCourse = new Course(ccode, scode, sname, semester, year, seats, registered, price);
                         courseList.addLast(newCourse);
                     }
                 }
             }
+            System.out.println("Load data successfully.");
         } catch (IOException e) {
-            System.err.println("Error reading courses.txt: " + e.getMessage());
+            System.err.println("File is empty");
         }
     }
 
@@ -71,6 +59,7 @@ public class CourseList {
         String year = Validation.getString("Enter year of course: ", "Wrong input!");
         int seats = Validation.getAnInteger("Enter Seats: ", "Wrong input!", 0, 30);
         double price = Validation.getPositiveDouble("Enter price of course: ", "Wrong input");
+        System.out.println("Added course successfully!");
         return new Course(ccode, scode, sname, semester, year, seats, price);
     }
 
@@ -85,52 +74,50 @@ public class CourseList {
             System.err.println("Course list is empty");
         }
         Node<Course> cur = courseList.head;
+        System.out.printf("%-15s %-15s %-15s %-10s %-10s %-10s %-12s %-10s\n",
+                "Course Code", "Subject Code", "Subject Name", "Semester", "Year", "Seats", "Registered", "Price");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------");
         while (cur != null) {
-            System.out.println("========================");
             cur.data.displayCourseInfo();
-            System.out.println("========================");
             cur = cur.next;
 
         }
     }
 
     //1.4
-    public void saveToFile() {
-        // First, collect all existing course codes to avoid duplicates
-        Set<String> existingCcodes = new HashSet<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("courses.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.trim().isEmpty()) {
-                    String[] word = line.split("\\\\");
-                    if (word.length > 0) {
-                        existingCcodes.add(word[0].trim().toUpperCase());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // If file doesn't exist, we'll create it later
-            System.out.println("courses.txt not found. A new file will be created.");
+    public void saveToFile(boolean isLoadData) {
+        if (courseList.isEmpty()) {
+            // vi list trong ma save vao file thi la clear file =))
+            System.err.println("List is empty, can not save file");
+            return;
         }
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("courses.txt", true))) {
+        if (!isLoadData) {
+            // chua load ma save thi no xoa cai data cu di va thay vao cai data moi dang co trong list
+            System.err.println("Please load data before save to file");
+            return;
+        }
+        try {
+            FileWriter fw = new FileWriter("courses.txt");
+            BufferedWriter bw = new BufferedWriter(fw);
             Node<Course> cur = courseList.head;
             while (cur != null) {
-                String code = cur.data.getCcode().toUpperCase();
-                if (!existingCcodes.contains(code)) {
-                    bw.write(cur.data.toString());
-                    bw.newLine();
-                    existingCcodes.add(code); // Add to set to prevent future duplicates
-                }
+                String data = cur.data.toString();
+                bw.write(data);
+                bw.newLine();
                 cur = cur.next;
             }
-            System.out.println("Courses saved successfully.");
-        } catch (IOException e) {
-            System.err.println("Error writing to courses.txt: " + e.getMessage());
+            System.out.println("Save data to file Successfully.");
+            bw.close();
+            fw.close();
+        } catch (Exception e) {
+            System.err.println("ERROR to save file");
         }
     }
 
     public Node<Course> searchByCcode(String ccode) {
+        if (courseList.isEmpty()) {
+            System.out.println("Course List is empty.");
+        }
         Node<Course> current = courseList.head;
         while (current != null) {
             if (current.data.getCcode().equalsIgnoreCase(ccode)) {
@@ -146,20 +133,27 @@ public class CourseList {
         String ccode = Validation.getValidString("Enter Course Code (Format CCxxxx): ",
                 "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
         Node<Course> course = searchByCcode(ccode);
+        System.out.println("\nHere is the Course that you want to search: ");
         if (course != null) {
-            System.out.println("========================");
             course.data.displayCourseInfo();
-            System.out.println("========================");
         } else {
             System.err.println("Course with code " + ccode + " NOT FOUND!");
         }
     }
 
     //1.6
-    public void deleteByCcode(String ccode) {
-        Node<Course> result = searchByCcode(ccode);
+    public void deleteByCcode(RegisterList registerList) {
+        if (courseList.isEmpty()) {
+            System.err.println("Course List is empty");
+            return;
+        }
+        String ccodeDelete = Validation.getValidString("Enter Course Code: ",
+                "The Format code is CCxxxx with x is number", "^CC\\d{4}$");
+        Node<Course> result = searchByCcode(ccodeDelete);
         if (result != null) {
+            registerList.deleteRegisterByCcode(ccodeDelete);
             courseList.delete(result);
+            System.out.println("Deletion successfully!");
         } else {
             System.err.println("Ccode is not Exist");
         }
@@ -167,6 +161,7 @@ public class CourseList {
 
     //1.7
     public void sortByCcode() {
+        System.out.println("\nHere is the Course List after sorting: ");
         for (Node<Course> i = courseList.head; i != courseList.tail; i = i.next) {
             Node<Course> pos = i;
             for (Node<Course> j = i.next; j != courseList.tail.next; j = j.next) {
@@ -192,26 +187,38 @@ public class CourseList {
     }
 
     //1.10
-    public Node<Course> deleteByPosition() {
+    public void deleteByPosition(RegisterList registerList) {
+        if (courseList.isEmpty()) {
+            System.err.println("Course List is empty");
+            return;
+        }
         int k = Validation.getAnInteger("Enter position to delete: ",
                 "Invalid!", 0, courseList.size() - 1);
+        Node<Course> result = courseList.getByIndex(k);
+        String ccode = result.data.getCcode();
+        registerList.deleteRegisterByCcode(ccode);
         courseList.delete(k);
-        return courseList.getByIndex(k);
+        System.out.println("Deletion successfully!");
     }
 
     //1.11
     public void searchByName() {
         String nameSearch = Validation.getString("Enter name searching: ", "Wrong input!");
         Node<Course> temp = courseList.head;
-        boolean ok = true;
+        boolean foundCourse = false;  // Track if a course is found
+
         while (temp != null) {
             if (temp.data.getSname().toUpperCase().contains(nameSearch.toUpperCase())) {
-                temp.data.displayCourseInfo();
-                ok = false;
+                if (!foundCourse) {
+                    System.out.println("Here is the course that you want to search:");
+                    foundCourse = true;
+                }
+                temp.data.displayCourseInfo();  // Display the course info
             }
             temp = temp.next;
         }
-        if (ok) {
+
+        if (!foundCourse) {
             System.err.println("Not found!");
         }
     }

@@ -7,7 +7,7 @@ package ui;
 public class MenuManagement {
 
     public Menu menuSystem() {
-        Menu menu = new Menu("============= Course Management System ==========");
+        Menu menu = new Menu("\n============= Course Management System ==========");
         menu.addNewOption("1. Course List");
         menu.addNewOption("2. Student List");
         menu.addNewOption("3. Registering List");
@@ -16,7 +16,7 @@ public class MenuManagement {
     }
 
     public Menu menuCourseList() {
-        Menu menu = new Menu("============= Course List Menu ==========");
+        Menu menu = new Menu("\n============= Course List Menu ==========");
         menu.addNewOption("1. Load data from file");
         menu.addNewOption("2. Input & add to the end");
         menu.addNewOption("3. Display data");
@@ -34,7 +34,7 @@ public class MenuManagement {
     }
 
     public Menu menuStudentList() {
-        Menu menu = new Menu("============= Student List Menu ==========");
+        Menu menu = new Menu("\n============= Student List Menu ==========");
         menu.addNewOption("1. Load data from file");
         menu.addNewOption("2. Input & add to the end");
         menu.addNewOption("3. Display data");
@@ -48,7 +48,7 @@ public class MenuManagement {
     }
 
     public Menu menuRegisterList() {
-        Menu menu = new Menu("============= Register List Menu ==========");
+        Menu menu = new Menu("\n============= Register List Menu ==========");
         menu.addNewOption("1. Load data from file");
         menu.addNewOption("2. Register the course");
         menu.addNewOption("3. Display data");

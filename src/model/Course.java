@@ -63,15 +63,8 @@ public class Course {
     }
 
     public void displayCourseInfo() {
-        System.out.println("Course code: " + ccode);
-        System.out.println("Subject code: " + scode);
-        System.out.println("Student name: " + sname);
-        System.out.println("Semester: " + semester);
-        System.out.println("Year: " + year);
-        System.out.println("Seats: " + seats);
-        System.out.println("Registered: " + registered);
-        System.out.println("Price: " + price);
-
+        System.out.printf("%-15s %-15s %-15s %-10s %-10s %-10d %-12d $%-9.2f\n",
+                ccode, scode, sname, semester, year, seats, registered, price);
     }
 
 }

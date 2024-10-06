@@ -2,7 +2,6 @@ package controller;
 
 import ui.Menu;
 import ui.MenuManagement;
-import util.Validation;
 
 public class CourseManagementSystem {
 
@@ -11,6 +10,10 @@ public class CourseManagementSystem {
     RegisterList registerList = new RegisterList();
     CourseList courseList = new CourseList();
     StudentList studentList = new StudentList();
+
+    boolean isLoadCourseList = false;
+    boolean isLoadStudentList = false;
+    boolean isLoadRegisterList = false;
 
     public void executeSystem() {
         Menu menu = mm.menuSystem();
@@ -41,6 +44,7 @@ public class CourseManagementSystem {
             switch (choice) {
                 case 1:
                     courseList.loadData();
+                    isLoadCourseList = true;
                     break;
                 case 2:
                     courseList.addLast();
@@ -49,16 +53,13 @@ public class CourseManagementSystem {
                     courseList.display();
                     break;
                 case 4:
-                    courseList.saveToFile();
+                    courseList.saveToFile(isLoadCourseList);
                     break;
                 case 5:
                     courseList.searchCourseByCode();
                     break;
                 case 6:
-                    String ccodeDelete = Validation.getValidString("Enter Course Code: ",
-                            "The Format code is CCxxxx with x is number", "^CC\\d{4}$");
-                    registerList.deleteRegisterByCcode(ccodeDelete);
-                    courseList.deleteByCcode(ccodeDelete);
+                    courseList.deleteByCcode(registerList);
                     break;
                 case 7:
                     courseList.sortByCcode();
@@ -70,8 +71,7 @@ public class CourseManagementSystem {
                     courseList.insertAfter();
                     break;
                 case 10:
-                    String coureDelete = courseList.deleteByPosition().data.getCcode();
-                    registerList.deleteRegisterByCcode(coureDelete);
+                    courseList.deleteByPosition(registerList);
                     break;
                 case 11:
                     courseList.searchByName();
@@ -93,6 +93,7 @@ public class CourseManagementSystem {
             switch (choice) {
                 case 1:
                     studentList.loadData();
+                    isLoadStudentList = true;
                     break;
                 case 2:
                     studentList.addLast();
@@ -101,16 +102,13 @@ public class CourseManagementSystem {
                     studentList.display();
                     break;
                 case 4:
-                    studentList.saveToFile();
+                    studentList.saveToFile(isLoadStudentList);
                     break;
                 case 5:
                     studentList.searchStudentByCode();
                     break;
                 case 6:
-                    String scodeDelete = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
-                            "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
-                    registerList.deleteRegisterByScode(scodeDelete);
-                    studentList.deleteByScode(scodeDelete);
+                    studentList.deleteByScode(registerList);
                     break;
                 case 7:
                     studentList.searchByName();
@@ -132,6 +130,7 @@ public class CourseManagementSystem {
             switch (choice) {
                 case 1:
                     registerList.loadData();
+                    isLoadRegisterList = true;
                     break;
                 case 2:
                     registerList.registerCourse(courseList, studentList);
@@ -140,7 +139,7 @@ public class CourseManagementSystem {
                     registerList.display();
                     break;
                 case 4:
-                    registerList.saveToFile();
+                    registerList.saveToFile(isLoadRegisterList);
                     break;
                 case 5:
                     registerList.sort();

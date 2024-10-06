@@ -4,12 +4,9 @@ import model.Course;
 import model.Register;
 import model.Student;
 import util.Validation;
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class RegisterList {
 
@@ -21,22 +18,24 @@ public class RegisterList {
     //3.1
     public void loadData() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("registerings.txt"));
+            FileReader fr = new FileReader("registerings.txt");
+            BufferedReader br = new BufferedReader(fr);
             String line;
             while ((line = br.readLine()) != null) {
-                String[] word = line.split("\\\\");
-                String ccode = word[0];
-                String scode = word[1];
-                Date date = new SimpleDateFormat("dd-MM-yyyy").parse(word[2]);
-                double mark = Double.parseDouble(word[3]);
-                if (searchByCcode(ccode) == null && searchByScode(scode) == null) {
-                    Register register = new Register(ccode, scode, date, mark);
-                    registerList.addLast(register);
+                if (line != null) {
+                    String[] word = line.split("\\\\");
+                    String ccode = word[0];
+                    String scode = word[1];
+                    Date date = new SimpleDateFormat("dd-MM-yyyy").parse(word[2]);
+                    double mark = Double.parseDouble(word[3]);
+                    if (searchByCcode(ccode) == null && searchByScode(scode) == null) {
+                        Register register = new Register(ccode, scode, date, mark);
+                        registerList.addLast(register);
+                    }
                 }
             }
-            br.close();
         } catch (Exception e) {
-            System.err.println("Error while loading data: " + e.getMessage());
+            System.err.println("Error");
         }
     }
 
@@ -64,17 +63,13 @@ public class RegisterList {
 
     //3.2
     public void registerCourse(CourseList courseList, StudentList studentList) {
-        String scode, ccode;
-        while (true) {
-            ccode = Validation.getValidString("Enter Course Code: ",
-                    "The Format code is CCxxxx with x is number", "^CC\\d{4}$");
-            scode = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
-                    "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
-            if (searchByCcode(ccode, courseList) != null && searchByScode(scode, studentList) != null) {
-                break;
-            } else {
-                System.err.println("Not found Student or Course");
-            }
+        String ccode = Validation.getValidString("Enter Course Code: ",
+                "The Format code is CCxxxx with x is number", "^CC\\d{4}$");
+        String scode = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
+                "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
+        if (searchByCcode(ccode, courseList) == null || searchByScode(scode, studentList) == null) {
+            System.err.println("Course code or student code is not exist");
+            return;
         }
         Date date = new Date();
         if (courseList.searchByCcode(ccode).data.getRegistered() < courseList.searchByCcode(ccode).data.getSeats()) {
@@ -109,40 +104,31 @@ public class RegisterList {
     }
 
     //3.4
-    public void saveToFile() {
-        // Step 1: Collect all existing (course code, student code) pairs to avoid duplicates
-        Set<String> existingRegisters = new HashSet<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("registerings.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.trim().isEmpty()) {
-                    String[] word = line.split("\\\\");
-                    if (word.length >= 2) {
-                        String combinedKey = (word[0].trim().toUpperCase() + "-" + word[1].trim().toUpperCase());
-                        existingRegisters.add(combinedKey); // Store CourseCode-StudentCode as a key
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // Handle case when the file doesn't exist
-            System.out.println("registerings.txt not found. A new file will be created.");
+    public void saveToFile(boolean isLoadData) {
+        if (registerList.isEmpty()) {
+            // vi list empty ma save vao file thi la clear file =))
+            System.err.println("List is empty, can not save file");
+            return;
         }
-
-        // Step 2: Write new records that don't already exist in the file
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("registerings.txt", true))) {
+        if (!isLoadData) {
+            // chua load ma save thi no xoa cai data cu di va thay vao cai data moi dang co trong list
+            System.err.println("Please load data before save to file");
+            return;
+        }
+        try {
+            FileWriter fw = new FileWriter("registerings.txt");
+            BufferedWriter bw = new BufferedWriter(fw);
             Node<Register> cur = registerList.head;
             while (cur != null) {
-                String combinedKey = cur.data.getCcode().toUpperCase() + "-" + cur.data.getScode().toUpperCase();
-                if (!existingRegisters.contains(combinedKey)) {
-                    bw.write(cur.data.toString());
-                    bw.newLine();
-                    existingRegisters.add(combinedKey); // Add new key to avoid future duplicates
-                }
+                String data = cur.data.toString();
+                bw.write(data);
+                bw.newLine();
                 cur = cur.next;
             }
-            System.out.println("Register entries saved successfully.");
-        } catch (IOException e) {
-            System.err.println("Error writing to registerings.txt: " + e.getMessage());
+            bw.close();
+            fw.close();
+        } catch (Exception e) {
+            System.err.println("ERROR");
         }
     }
 

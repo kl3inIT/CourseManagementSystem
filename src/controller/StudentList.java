@@ -2,7 +2,6 @@ package controller;
 
 import model.Student;
 import util.Validation;
-
 import java.io.*;
 import java.time.LocalDate;
 
@@ -15,22 +14,24 @@ public class StudentList {
 
     //2.1
     public void loadData() {
-        try (BufferedReader br = new BufferedReader(new FileReader("students.txt"))) {
+        try {
+            FileReader fr = new FileReader("students.txt");
+            BufferedReader br = new BufferedReader(fr);
             String line;
             while ((line = br.readLine()) != null) {
-                String[] word = line.split("\\\\");
-                String scode = word[0];
-                String name = word[1];
-                int byear = Integer.parseInt(word[2]);
-                if (searchByScode(scode) == null) {
-                    Student newStudent = new Student(scode, name, byear);
-                    studentList.addLast(newStudent);
+                if (line != null) {
+                    String[] word = line.split("\\\\");
+                    String scode = word[0];
+                    String name = word[1];
+                    int byear = Integer.parseInt(word[2]);
+                    if (searchByScode(scode) == null) {
+                        Student newStudent = new Student(scode, name, byear);
+                        studentList.addLast(newStudent);
+                    }
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("Error parsing student data: " + e.getMessage());
+            System.err.println("File is empty");
         }
     }
 
@@ -78,18 +79,31 @@ public class StudentList {
     }
 
     //2.4
-    public void saveToFile() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("students.txt", true))) {
+    public void saveToFile(boolean isLoadData) {
+        if (studentList.isEmpty()) {
+            // vi list trong ma save vao file thi la clear file =))
+            System.err.println("List is empty, can not save file");
+            return;
+        }
+        if (!isLoadData) {
+            // chua load ma save thi no xoa cai data cu di va thay vao cai data moi dang co trong list
+            System.err.println("Please load data before save to file");
+            return;
+        }
+        try {
+            FileWriter fw = new FileWriter("students.txt");
+            BufferedWriter bw = new BufferedWriter(fw);
             Node<Student> cur = studentList.head;
             while (cur != null) {
-                if (isStudentNew(cur.data.getScode())) {
-                    bw.write(cur.data.toString());
-                    bw.newLine();
-                }
+                String data = cur.data.toString();
+                bw.write(data);
+                bw.newLine();
                 cur = cur.next;
             }
+            bw.close();
+            fw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("ERROR");
         }
     }
 
@@ -134,8 +148,13 @@ public class StudentList {
     }
 
     //2.6
-    public void deleteByScode(String scode) {
-        Node<Student> result = searchByScode(scode);
+    public void deleteByScode(RegisterList registerList) {
+        String scodeDelete = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
+                "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
+        // delete into register list first
+        registerList.deleteRegisterByScode(scodeDelete);
+        // delete into studentList
+        Node<Student> result = searchByScode(scodeDelete);
         if (result != null) {
             studentList.delete(result);
         } else {

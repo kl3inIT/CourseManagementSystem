@@ -155,8 +155,9 @@ public class MyLinkedList<T> {
         }
 
         Node<T> prev = getPrev(node);
-        prev.next = node.next;
+        prev.next = node.next;      
         node.next = null;
+        node = null;
     }
 
     public void delete(int index) {
