@@ -162,7 +162,7 @@ public class CourseList {
 
     //1.7
     public void sortByCcode() {
-        System.out.println("\nHere is the Course List after sorting: ");
+        System.out.println("\nHere is the Course List after sorting ascending: ");
         for (Node<Course> i = courseList.head; i != courseList.tail; i = i.next) {
             Node<Course> pos = i;
             for (Node<Course> j = i.next; j != courseList.tail.next; j = j.next) {

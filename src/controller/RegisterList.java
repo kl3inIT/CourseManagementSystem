@@ -34,6 +34,7 @@ public class RegisterList {
                     }
                 }
             }
+            System.out.println("Load data successfully!");
         } catch (Exception e) {
             System.err.println("Error");
         }
@@ -75,6 +76,7 @@ public class RegisterList {
         if (courseList.searchByCcode(ccode).data.getRegistered() < courseList.searchByCcode(ccode).data.getSeats()) {
             Register register = new Register(ccode, scode, date, 0);
             registerList.addFirst(register);
+            System.out.println("Registering successfully!");
             courseList.searchByCcode(ccode).data.setRegistered();
         } else {
             System.err.println("Seats are full!");
@@ -135,6 +137,11 @@ public class RegisterList {
 
     //3.5
     public void sort() {
+        if (registerList.isEmpty()) {
+            System.out.println("Register List is empty.");
+            return;
+        }
+        System.out.println("\nHere is the Register List after sorting ascending by ccode: ");
         for (Node<Register> i = registerList.head; i != registerList.tail; i = i.next) {
             Node<Register> pos = i;
             for (Node<Register> j = i.next; j != registerList.tail.next; j = j.next) {
@@ -145,7 +152,7 @@ public class RegisterList {
             registerList.swap(i, pos);
         }
         display();
-
+        System.out.println("\nHere is the Register List after sorting ascending by scode: ");
         for (Node<Register> i = registerList.head; i != registerList.tail; i = i.next) {
             Node<Register> pos = i;
             for (Node<Register> j = i.next; j != registerList.tail.next; j = j.next) {
@@ -170,6 +177,7 @@ public class RegisterList {
             if (register != null) {
                 int mark = Validation.getAnInteger("Enter mark: ", "Invalid!", 0, 10);
                 register.data.setMark(mark);
+                System.out.println("Update mark successfully!");
                 break;
             } else {
                 System.out.println("Not found!");
