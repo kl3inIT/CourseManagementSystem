@@ -198,17 +198,18 @@ public class RegisterList {
             if (current.data.getCcode().equalsIgnoreCase(ccode)) {
                 registerList.delete(current);
             }
-            current = nextNode;
+            current = nextNode; // Move to the next node
         }
     }
 
     public void deleteRegisterByScode(String scode) {
         Node<Register> current = registerList.head;
         while (current != null) {
+            Node<Register> nextNode = current.next;
             if (current.data.getScode().equalsIgnoreCase(scode)) {
                 registerList.delete(current);
             }
-            current = current.next;
+            current = nextNode;
         }
     }
 

@@ -137,11 +137,10 @@ public class StudentList {
     public void deleteByScode(RegisterList registerList) {
         String scodeDelete = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
                 "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
-        // delete into register list first
-        registerList.deleteRegisterByScode(scodeDelete);
-        // delete into studentList
         Node<Student> result = searchByScode(scodeDelete);
+
         if (result != null) {
+            registerList.deleteRegisterByScode(scodeDelete);
             studentList.delete(result);
             System.out.println("Deteletion successfully!");
         } else {
