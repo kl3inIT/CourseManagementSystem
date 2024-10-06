@@ -30,6 +30,6 @@ public class Student {
 
     public void displayStudentInfo() {
         System.out.printf("%-15s %-25s %-10s\n",
-                 scode, name, byear);
+                scode, name, byear);
     }
 }

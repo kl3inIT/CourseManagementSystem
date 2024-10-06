@@ -194,10 +194,11 @@ public class RegisterList {
     public void deleteRegisterByCcode(String ccode) {
         Node<Register> current = registerList.head;
         while (current != null) {
+            Node<Register> nextNode = current.next;  // Save reference to the next node before deletion
             if (current.data.getCcode().equalsIgnoreCase(ccode)) {
                 registerList.delete(current);
             }
-            current = current.next;
+            current = nextNode;
         }
     }
 
@@ -211,27 +212,27 @@ public class RegisterList {
         }
     }
 
-    public void printOutCourseByScode(String scode, CourseList courseList){
+    public void printOutCourseByScode(String scode, CourseList courseList) {
         Node<Register> cur = registerList.head;
-        while(cur != null){
-            if(cur.data.getScode().equalsIgnoreCase(scode)){
-                Node<Course> result =  courseList.searchByCcode(cur.data.getCcode());
-                if(result != null){
+        while (cur != null) {
+            if (cur.data.getScode().equalsIgnoreCase(scode)) {
+                Node<Course> result = courseList.searchByCcode(cur.data.getCcode());
+                if (result != null) {
                     result.data.displayCourseInfo();
                 }
             }
             cur = cur.next;
         }
     }
-    
-    public void printOutStudentByCcode(String ccode, StudentList studentList){
+
+    public void printOutStudentByCcode(String ccode, StudentList studentList) {
         Node<Register> cur = registerList.head;
-        while(cur != null){
-            if(cur.data.getCcode().equalsIgnoreCase(ccode)){
+        while (cur != null) {
+            if (cur.data.getCcode().equalsIgnoreCase(ccode)) {
                 Node<Student> result = studentList.searchByScode(cur.data.getScode());
-                if(result != null){
+                if (result != null) {
                     result.data.displayStudentInfo();
-                }             
+                }
             }
             cur = cur.next;
         }

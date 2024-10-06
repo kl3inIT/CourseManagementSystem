@@ -8,7 +8,6 @@ import java.io.IOException;
 import model.Course;
 import util.Validation;
 
-
 public class CourseList {
 
     private final MyLinkedList<Course> courseList = new MyLinkedList<>();
@@ -229,7 +228,7 @@ public class CourseList {
 
     //1.12
     public void searchCourseByCcode(RegisterList registerList, StudentList studentList) {
-        String ccode =  Validation.getValidString("Enter Course Code (Format CCxxxx): ",
+        String ccode = Validation.getValidString("Enter Course Code (Format CCxxxx): ",
                 "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
         Node<Course> course = searchByCcode(ccode);
         if (course != null) {
@@ -243,4 +242,3 @@ public class CourseList {
     }
 
 }
-
