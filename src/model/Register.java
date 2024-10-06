@@ -46,10 +46,7 @@ public class Register {
     }
 
     public void displayRegistrationInfo() {
-        System.out.println("Course Code: " + ccode);
-        System.out.println("Student Code: " + scode);
-        System.out.println("Registration date " + getBdate());
-        System.out.println("Mark: " + mark);
-        System.out.println("State: " + state);
+        System.out.printf("%-15s %-15s %-15s %-10.2f %-10s\n",
+                ccode, scode, getBdate(), mark, (state == 1 ? "Passed" : "Failed"));
     }
 }

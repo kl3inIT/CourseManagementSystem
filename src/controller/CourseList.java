@@ -72,6 +72,7 @@ public class CourseList {
     public void display() {
         if (courseList.isEmpty()) {
             System.err.println("Course list is empty");
+            return;
         }
         Node<Course> cur = courseList.head;
         System.out.printf("%-15s %-15s %-15s %-10s %-10s %-10s %-12s %-10s\n",
@@ -228,13 +229,11 @@ public class CourseList {
         String ccode = Validation.getValidString("Enter Course Code (Format CCxxxx): ",
                 "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
         Node<Course> course = searchByCcode(ccode);
+        System.out.println("Here is the course you want to search: ");
         if (course != null) {
-            System.out.println("========================");
             course.data.displayCourseInfo();
-            System.out.println("========================");
             String scode = registerList.findScodeByCcode(ccode);
             studentList.searchByScode(scode).data.displayStudentInfo();
-            System.out.println("========================");
         } else {
             System.err.println("Course with code " + ccode + " NOT FOUND!");
         }

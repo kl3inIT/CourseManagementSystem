@@ -33,8 +33,7 @@ public class Student {
     }
 
     public void displayStudentInfo() {
-        System.out.println("Student code: " + scode);
-        System.out.println("Student name: " + name);
-        System.out.println("Birth year of student: " + byear);
+        System.out.printf("%-15s %-25s %-10s\n",
+                 scode, name, byear);
     }
 }

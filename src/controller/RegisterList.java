@@ -94,11 +94,12 @@ public class RegisterList {
         if (registerList.isEmpty()) {
             System.err.println("Course list is empty");
         }
+        System.out.printf("%-15s %-15s %-15s %-10s %-10s\n",
+                "Course Code", "Student Code", "Birth Date", "Mark", "Status");
+        System.out.println("--------------------------------------------------------------------------");
         Node<Register> cur = registerList.head;
         while (cur != null) {
-            System.out.println("========================");
             cur.data.displayRegistrationInfo();
-            System.out.println("========================");
             cur = cur.next;
         }
     }

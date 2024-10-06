@@ -30,6 +30,7 @@ public class StudentList {
                     }
                 }
             }
+            System.out.println("Load data successfully!");
         } catch (IOException e) {
             System.err.println("File is empty");
         }
@@ -50,12 +51,13 @@ public class StudentList {
         int byear;
         while (true) {
             byear = Validation.getAnInteger("Enter birth year: ",
-                    "Please input from 1900 to current year!", 2000, LocalDate.now().getYear());
+                    "Please input from 2000 to current year!", 2000, LocalDate.now().getYear());
             int age = LocalDate.now().getYear() - byear;
             if (age >= 18) {
                 break;
             }
         }
+        System.out.println("Input student successfully!");
         return new Student(scode, name, byear);
     }
 
@@ -68,12 +70,14 @@ public class StudentList {
     public void display() {
         if (studentList.isEmpty()) {
             System.err.println("Course list is empty");
+            return;
         }
         Node<Student> cur = studentList.head;
+        System.out.printf("%-15s %-25s %-10s\n",
+                "Student Code", "Student Name", "Birth Year");
+        System.out.println("----------------------------------------------------");
         while (cur != null) {
-            System.out.println("========================");
             cur.data.displayStudentInfo();
-            System.out.println("========================");
             cur = cur.next;
         }
     }
@@ -100,6 +104,7 @@ public class StudentList {
                 bw.newLine();
                 cur = cur.next;
             }
+            System.out.println("Save data successfully!");
             bw.close();
             fw.close();
         } catch (IOException e) {
@@ -107,22 +112,10 @@ public class StudentList {
         }
     }
 
-    private boolean isStudentNew(String scode) {
-        try (BufferedReader br = new BufferedReader(new FileReader("students.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] word = line.split("\\\\");
-                if (word[0].equalsIgnoreCase(scode)) {
-                    return false;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
     public Node<Student> searchByScode(String scode) {
+        if (studentList.isEmpty()) {
+            return null;
+        }
         Node<Student> current = studentList.head;
         while (current != null) {
             if (current.data.getScode().equalsIgnoreCase(scode)) {
@@ -139,9 +132,8 @@ public class StudentList {
                 "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
         Node<Student> student = searchByScode(scode);
         if (student != null) {
-            System.out.println("========================");
+            System.out.println("\nHere is student you want to search: ");
             student.data.displayStudentInfo();
-            System.out.println("========================");
         } else {
             System.err.println("Course with code " + scode + " NOT FOUND!");
         }
@@ -157,6 +149,7 @@ public class StudentList {
         Node<Student> result = searchByScode(scodeDelete);
         if (result != null) {
             studentList.delete(result);
+            System.out.println("Deteletion successfully!");
         } else {
             System.err.println("Ccode is not Exist");
         }
@@ -166,16 +159,21 @@ public class StudentList {
     public void searchByName() {
         String nameSearch = Validation.getString("Enter name searching: ", "Wrong input!");
         Node<Student> temp = studentList.head;
-        boolean ok = true;
+        boolean foundStudent = false;  // Track if a student is found
+
         while (temp != null) {
             if (temp.data.getName().toUpperCase().contains(nameSearch.toUpperCase())) {
-                temp.data.displayStudentInfo();
-                ok = false;
+                if (!foundStudent) {
+                    // Print the message once when the first matching student is found
+                    System.out.println("Here is the student that you want to search:");
+                    foundStudent = true;
+                }
+                temp.data.displayStudentInfo();  // Display the student info
             }
             temp = temp.next;
         }
 
-        if (ok) {
+        if (!foundStudent) {
             System.err.println("Not found!");
         }
     }
