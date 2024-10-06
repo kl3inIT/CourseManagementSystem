@@ -34,6 +34,7 @@ public class RegisterList {
                     }
                 }
             }
+            System.out.println("Load data successfully!");
         } catch (Exception e) {
             System.err.println("Error");
         }
