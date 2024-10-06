@@ -28,10 +28,8 @@ public class RegisterList {
                     String scode = word[1];
                     Date date = new SimpleDateFormat("dd-MM-yyyy").parse(word[2]);
                     double mark = Double.parseDouble(word[3]);
-                    if (searchByCcode(ccode) == null && searchByScode(scode) == null) {
                         Register register = new Register(ccode, scode, date, mark);
                         registerList.addLast(register);
-                    }
                 }
             }
             System.out.println("Load data successfully!");
@@ -97,7 +95,7 @@ public class RegisterList {
             System.err.println("Course list is empty");
         }
         System.out.printf("%-15s %-15s %-15s %-10s %-10s\n",
-                "Course Code", "Student Code", "Birth Date", "Mark", "Status");
+                "Course Code", "Student Code", "Register Date", "Mark", "Status");
         System.out.println("--------------------------------------------------------------------------");
         Node<Register> cur = registerList.head;
         while (cur != null) {

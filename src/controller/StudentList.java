@@ -49,14 +49,8 @@ public class StudentList {
         }
         String name = Validation.getString("Enter student name: ", "Wrong input!");
         int byear;
-        while (true) {
             byear = Validation.getAnInteger("Enter birth year: ",
-                    "Please input from 2000 to current year!", 2000, LocalDate.now().getYear());
-            int age = LocalDate.now().getYear() - byear;
-            if (age >= 18) {
-                break;
-            }
-        }
+                    "Please input from 1990 to current year!", 1990, LocalDate.now().getYear() - 18);
         System.out.println("Input student successfully!");
         return new Student(scode, name, byear);
     }
@@ -184,14 +178,13 @@ public class StudentList {
                 "The format of id is HAXXXXXX, HEXXXXXX, HSXXXXXX", "H[ASE]\\d{6}");
         Node<Student> student = searchByScode(scode);
         if (student != null) {
-            System.out.println("========================");
+            System.out.println("Here is student you want to seach: ");
             student.data.displayStudentInfo();
-            System.out.println("========================");
             String ccode = registerList.findCcodeByScode(scode);
+            System.out.println("Here are the courses this student has register in: ");
             courseList.searchByCcode(ccode).data.displayCourseInfo();
-            System.out.println("========================");
         } else {
-            System.err.println("Course with code " + scode + " NOT FOUND!");
+            System.err.println("Student with code " + scode + " NOT FOUND!");
         }
 
     }
