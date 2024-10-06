@@ -1,10 +1,13 @@
 package controller;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import model.Course;
 import model.Register;
 import model.Student;
 import util.Validation;
-import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -40,7 +43,7 @@ public class RegisterList {
         }
     }
 
-    public boolean isExistRegister(String ccode, String scode) {
+    private boolean isExistRegister(String ccode, String scode) {
         Node<Register> current = registerList.head;
         while (current != null) {
             if (current.data.getCcode().equalsIgnoreCase(ccode)
@@ -50,28 +53,6 @@ public class RegisterList {
             current = current.next;
         }
         return false;
-    }
-
-    private Node<Register> searchByScode(String scode) {
-        Node<Register> current = registerList.head;
-        while (current != null) {
-            if (current.data.getScode().equalsIgnoreCase(scode)) {
-                return current;
-            }
-            current = current.next;
-        }
-        return null; // Not found
-    }
-
-    private Node<Register> searchByCcode(String ccode) {
-        Node<Register> current = registerList.head;
-        while (current != null) {
-            if (current.data.getCcode().equalsIgnoreCase(ccode)) {
-                return current;
-            }
-            current = current.next;
-        }
-        return null; // Not found
     }
 
     //3.2
@@ -140,6 +121,7 @@ public class RegisterList {
                 bw.newLine();
                 cur = cur.next;
             }
+            System.out.println("Save Date successfully!");
             bw.close();
             fw.close();
         } catch (Exception e) {
@@ -227,28 +209,6 @@ public class RegisterList {
             }
             current = current.next;
         }
-    }
-
-    public String findScodeByCcode(String ccode) {
-        Node<Register> current = registerList.head;
-        while (current != null) {
-            if (current.data.getCcode().equalsIgnoreCase(ccode)) {
-                return current.data.getScode();
-            }
-            current = current.next;
-        }
-        return null;
-    }
-
-    public String findCcodeByScode(String scode) {
-        Node<Register> current = registerList.head;
-        while (current != null) {
-            if (current.data.getScode().equalsIgnoreCase(scode)) {
-                return current.data.getCcode();
-            }
-            current = current.next;
-        }
-        return null;
     }
 
     public void printOutCourseByScode(String scode, CourseList courseList){

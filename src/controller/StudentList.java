@@ -36,7 +36,7 @@ public class StudentList {
         }
     }
 
-    public Student inputStudent() {
+    private Student inputStudent() {
         String scode;
         while (true) {
             scode = Validation.getValidString("Input student ID(HAxxxxxx, HExxxxxx, HSxxxxxx): ",
@@ -50,7 +50,7 @@ public class StudentList {
         String name = Validation.getString("Enter student name: ", "Wrong input!");
         int byear;
             byear = Validation.getAnInteger("Enter birth year: ",
-                    "Please input from 1990 to 2006!", 1990, LocalDate.now().getYear() - 18);
+                    "Please input from 1990 to "+ (LocalDate.now().getYear() - 18) + " !", 1990, LocalDate.now().getYear() - 18);
         System.out.println("Input student successfully!");
         return new Student(scode, name, byear);
     }

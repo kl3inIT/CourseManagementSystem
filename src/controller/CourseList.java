@@ -1,9 +1,13 @@
 package controller;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import model.Course;
 import util.Validation;
 
-import java.io.*;
 
 public class CourseList {
 
@@ -41,8 +45,7 @@ public class CourseList {
         }
     }
 
-    //1.2
-    public Course inputCourse() {
+    private Course inputCourse() {
         String ccode;
         while (true) {
             ccode = Validation.getValidString("Enter Course Code: ",
