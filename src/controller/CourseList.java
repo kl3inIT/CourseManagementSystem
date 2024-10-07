@@ -136,8 +136,12 @@ public class CourseList {
         String ccode = Validation.getValidString("Enter Course Code (Format CCxxxx): ",
                 "The format code is CCxxxx with x being numbers.", "^CC\\d{4}$");
         Node<Course> course = searchByCcode(ccode);
-        System.out.println("\nHere is the Course that you want to search: ");
+
         if (course != null) {
+            System.out.println("\nHere is the Course that you want to search: ");
+            System.out.printf("%-15s %-15s %-15s %-10s %-10s %-10s %-12s %-10s\n",
+                    "Course Code", "Subject Code", "Subject Name", "Semester", "Year", "Seats", "Registered", "Price");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------");
             course.data.displayCourseInfo();
         } else {
             System.err.println("Course with code " + ccode + " NOT FOUND!");
@@ -164,7 +168,7 @@ public class CourseList {
 
     //1.7
     public void sortByCcode() {
-        System.out.println("\nHere is the Course List after sorting ascending: ");
+
         for (Node<Course> i = courseList.head; i != courseList.tail; i = i.next) {
             Node<Course> pos = i;
             for (Node<Course> j = i.next; j != courseList.tail.next; j = j.next) {
@@ -174,6 +178,7 @@ public class CourseList {
             }
             courseList.swap(i, pos);
         }
+        System.out.println("\nHere is the Course List after sorting ascending: ");
         display();
     }
 
@@ -214,6 +219,9 @@ public class CourseList {
             if (temp.data.getSname().toUpperCase().contains(nameSearch.toUpperCase())) {
                 if (!foundCourse) {
                     System.out.println("Here is the course that you want to search:");
+                    System.out.printf("%-15s %-15s %-15s %-10s %-10s %-10s %-12s %-10s\n",
+                            "Course Code", "Subject Code", "Subject Name", "Semester", "Year", "Seats", "Registered", "Price");
+                    System.out.println("----------------------------------------------------------------------------------------------------------------------");
                     foundCourse = true;
                 }
                 temp.data.displayCourseInfo();  // Display the course info
@@ -233,8 +241,14 @@ public class CourseList {
         Node<Course> course = searchByCcode(ccode);
         if (course != null) {
             System.out.println("\nHere is the course you want to search: ");
+            System.out.printf("%-15s %-15s %-15s %-10s %-10s %-10s %-12s %-10s\n",
+                    "Course Code", "Subject Code", "Subject Name", "Semester", "Year", "Seats", "Registered", "Price");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------");
             course.data.displayCourseInfo();
             System.out.println("\nHere are the students in this course: ");
+            System.out.printf("%-15s %-25s %-10s\n",
+                    "Student Code", "Student Name", "Birth Year");
+            System.out.println("----------------------------------------------------");
             registerList.printOutStudentByCcode(ccode, studentList);
         } else {
             System.err.println("Course with code " + ccode + " NOT FOUND!");

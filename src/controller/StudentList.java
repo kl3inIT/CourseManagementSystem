@@ -127,6 +127,9 @@ public class StudentList {
         Node<Student> student = searchByScode(scode);
         if (student != null) {
             System.out.println("\nHere is student you want to search: ");
+            System.out.printf("%-15s %-25s %-10s\n",
+                    "Student Code", "Student Name", "Birth Year");
+            System.out.println("----------------------------------------------------");
             student.data.displayStudentInfo();
         } else {
             System.err.println("Course with code " + scode + " NOT FOUND!");
@@ -159,6 +162,9 @@ public class StudentList {
                 if (!foundStudent) {
                     // Print the message once when the first matching student is found
                     System.out.println("Here is the student that you want to search:");
+                    System.out.printf("%-15s %-25s %-10s\n",
+                            "Student Code", "Student Name", "Birth Year");
+                    System.out.println("----------------------------------------------------");
                     foundStudent = true;
                 }
                 temp.data.displayStudentInfo();  // Display the student info
@@ -178,8 +184,14 @@ public class StudentList {
         Node<Student> student = searchByScode(scode);
         if (student != null) {
             System.out.println("\nHere is student you want to seach: ");
+            System.out.printf("%-15s %-25s %-10s\n",
+                    "Student Code", "Student Name", "Birth Year");
+            System.out.println("----------------------------------------------------");
             student.data.displayStudentInfo();
             System.out.println("\nHere are the courses this student has register in: ");
+            System.out.printf("%-15s %-15s %-15s %-10s %-10s %-10s %-12s %-10s\n",
+                    "Course Code", "Subject Code", "Subject Name", "Semester", "Year", "Seats", "Registered", "Price");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------");
             registerList.printOutCourseByScode(scode, courseList);
         } else {
             System.err.println("Student with code " + scode + " NOT FOUND!");
