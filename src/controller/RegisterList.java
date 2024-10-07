@@ -148,7 +148,6 @@ public class RegisterList {
         
         System.out.println("\nHere is the Register List after sorting ascending by ccode: ");
         display();
-        System.out.println("\nHere is the Register List after sorting ascending by scode: ");
         for (Node<Register> i = registerList.head; i != registerList.tail; i = i.next) {
             Node<Register> pos = i;
             for (Node<Register> j = i.next; j != registerList.tail.next; j = j.next) {
